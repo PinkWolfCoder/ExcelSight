@@ -1,40 +1,28 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="UTF-8">
-    <title>Excel App</title>
-    <style>
-      body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Welcome to Excel App!</h1>
+    <title>Excel Handler</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        
+            <h2 id="loadTitle">Load Excel File</h2>
+            <input type="text" id="filePath" placeholder="Enter Excel file path">
+            <button id="loadButton">Load Excel</button>
 
-    <h2>Load Excel File</h2>
-    <input type="text" id="filePath" placeholder="Enter Excel file path">
-    <button id="loadButton">Load Excel</button>
+            <h2>Read from Excel</h2>
+            <input type="number" id="readRow" placeholder="Enter row number">
+            <button id="readButton">Read Row</button>
 
-    <h2>Read from Excel</h2>
-    <input type="number" id="readRow" placeholder="Enter row number">
-    <button id="readButton">Read Row</button>
-    <h3>Read Result:</h3>
-    <pre id="readResult"></pre>
-
-    <h2>Append to Excel</h2>
-    <form id="appendForm">
-      <input type="text" id="col1" placeholder="Column 1">
-      <input type="text" id="col2" placeholder="Column 2">
-      <input type="text" id="col3" placeholder="Column 3">
-      <button type="submit">Append Row</button>
-    </form>
-
-    <button id="exitButton">Exit</button>
+            <button id="exitButton">Exit App</button>
+        
+            <h3>Read Result:</h3>
+            <pre id="readResult"></pre>
+        
+    </div>
 
     <script src="renderer.js"></script>
-  </body>
+</body>
 </html>

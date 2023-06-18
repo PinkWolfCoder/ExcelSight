@@ -1,4 +1,3 @@
-// renderer.js
 const { ipcRenderer } = require('electron');
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -6,6 +5,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const readButton = document.getElementById('readButton');
   const appendForm = document.getElementById('appendForm');
   const exitButton = document.getElementById('exitButton');
+  const loadTitle = document.getElementById('loadTitle');
+
+  ipcRenderer.on('load-result', (event, success) => {
+    if (success) {
+      loadTitle.classList.add('load-success'); // Add success class
+      loadTitle.classList.remove('load-failure'); // Remove failure class
+    } else {
+      loadTitle.classList.add('load-failure'); // Add failure class
+      loadTitle.classList.remove('load-success'); // Remove success class
+    }
+  });
 
   loadButton.addEventListener('click', async () => {
     const filePath = document.getElementById('filePath').value;
@@ -30,32 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const rowData = await ipcRenderer.invoke('read-row', rowNumber);
       const readResult = document.getElementById('readResult');
-      readResult.textContent = JSON.stringify(rowData, null, 2);
+      const formattedRowData = JSON.stringify(rowData, null, 2);
+      console.log('Formatted row data:', formattedRowData);  // New line
+      readResult.textContent = formattedRowData;
+      console.log('readResult text content:', readResult.textContent);  // New line
     } catch (err) {
       console.error(err);
     } finally {
       readButton.disabled = false;  // enable the button again
-    }
-  });
-
-  appendForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const col1 = document.getElementById('col1').value;
-    const col2 = document.getElementById('col2').value;
-    const col3 = document.getElementById('col3').value;
-    const appendButton = appendForm.querySelector('button');
-    appendButton.disabled = true;  // disable the button
-    try {
-      const response = await ipcRenderer.invoke('append-row', { col1, col2, col3 });
-      if (response.success) {
-        console.log(response.message);
-      } else {
-        console.error(response.message);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      appendButton.disabled = false;  // enable the button again
     }
   });
 

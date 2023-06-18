@@ -47,9 +47,11 @@ ipcMain.handle('load-excel', (event, filePath) => {
     fs.access(fullPath, fs.constants.F_OK, (err) => {
       if (err) {
         console.error(`The file ${filePath} does not exist.`);
+        event.sender.send('load-result', false); // Inform renderer of failure
         reject({ success: false, message: 'File not found' });
       } else {
         console.log(`Excel file loaded successfully: ${fullPath}`);
+        event.sender.send('load-result', true); // Inform renderer of success
         resolve({ success: true, message: 'File loaded successfully' });
       }
     });
