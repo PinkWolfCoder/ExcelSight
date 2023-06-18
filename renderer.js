@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let container = document.getElementById("jsoneditor");
   let editor = new JSONEditor(container);
+  container.classList.add("hidden");
 
   ipcRenderer.on('load-result', (event, success) => {
     if (success) {
@@ -43,6 +44,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   readButton.addEventListener('click', () => {
     const rowNumber = document.getElementById('readRow').value;
+    const container = document.getElementById("jsoneditor");
+    container.classList.remove("hidden");
+
     readButton.disabled = true;  // disable the button
     try {
       ipcRenderer.send('read-row', rowNumber);
