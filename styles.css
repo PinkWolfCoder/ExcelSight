@@ -32,19 +32,24 @@ h1 {
 
 #jsoneditor {
     width: 100%;
-    height: 400px;
+    height: 100%;
 }
 
 .container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 200px 1fr;
     gap: 20px;
-}
-
-.left-section {
+    height: 100vh; /* Set container height to full viewport height */
+  }
+  
+  .left-section {
     grid-column: 1 / 2;
-}
+    background-color: #f0f0f0; /* Add a background color to the left section */
+    padding: 10px; /* Add padding to the left section */
+  }
 
-.right-section {
+  .right-section {
     grid-column: 2 / 3;
-}
+    width: 95%; /* Set the width to 100% */
+    height: 90%; /* Set the height to 100% */
+  }

@@ -7,27 +7,43 @@ document.addEventListener('DOMContentLoaded', () => {
   const loadTitle = document.getElementById('loadTitle');
 
   let container = document.getElementById("jsoneditor");
-  let editor = new JSONEditor(container);
+  let editor = null;
+
   container.classList.add("hidden");
 
   ipcRenderer.on('load-result', (event, success) => {
     if (success) {
-      loadTitle.classList.add('load-success'); // Add success class
-      loadTitle.classList.remove('load-failure'); // Remove failure class
+      loadTitle.classList.add('load-success');
+      loadTitle.classList.remove('load-failure');
     } else {
-      loadTitle.classList.add('load-failure'); // Add failure class
-      loadTitle.classList.remove('load-success'); // Remove success class
+      loadTitle.classList.add('load-failure');
+      loadTitle.classList.remove('load-success');
     }
   });
 
   ipcRenderer.on('row-data', (event, rowData) => {
+    if (editor) {
+      editor.destroy();
+    }
+    container.innerHTML = ''; // Clear previous content
+    editor = new JSONEditor(container, {}); // Create a new editor instance
     editor.set(rowData); // Set JSON data to editor
+    adjustEditorSize(); // Adjust the size initially
   });
-  
+
+  function adjustEditorSize() {
+    container.style.width = '100%'; // Set width to 100%
+    container.style.height = '100%'; // Set height to 100%
+    if (editor) {
+      editor.resize(); // Resize the editor to fit the updated size
+    }
+  }
+
+  window.addEventListener('resize', adjustEditorSize);
 
   loadButton.addEventListener('click', async () => {
     const filePath = document.getElementById('filePath').value;
-    loadButton.disabled = true;  // disable the button
+    loadButton.disabled = true;
     try {
       const response = await ipcRenderer.invoke('load-excel', filePath);
       if (response.success) {
@@ -38,22 +54,21 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       console.error(err);
     } finally {
-      loadButton.disabled = false;  // enable the button again
+      loadButton.disabled = false;
     }
   });
 
   readButton.addEventListener('click', () => {
     const rowNumber = document.getElementById('readRow').value;
-    const container = document.getElementById("jsoneditor");
     container.classList.remove("hidden");
 
-    readButton.disabled = true;  // disable the button
+    readButton.disabled = true;
     try {
       ipcRenderer.send('read-row', rowNumber);
     } catch (err) {
       console.error(err);
     } finally {
-      readButton.disabled = false;  // enable the button again
+      readButton.disabled = false;
     }
   });
 
