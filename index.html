@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Excel Handler</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <link href="node_modules/jsoneditor/dist/jsoneditor.min.css" rel="stylesheet" type="text/css">
 </head>
 <body>
     <div class="container">
@@ -21,10 +22,11 @@
         
         <div class="right-section">
             <h3>Read Result:</h3>
-            <pre id="readResult"></pre>
+            <div id="jsoneditor" style="width: 600px; height: 400px;"></div>
         </div>
     </div>
 
     <script src="renderer.js"></script>
+    <script src="node_modules/jsoneditor/dist/jsoneditor.min.js"></script>
 </body>
 </html>

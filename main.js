@@ -58,7 +58,7 @@ ipcMain.handle('load-excel', (event, filePath) => {
   });
 });
 
-ipcMain.handle('read-row', (event, rowNumber) => {
+ipcMain.on('read-row', (event, rowNumber) => {
   console.log(`Reading row ${rowNumber} from Excel...`);
   const filePath = path.resolve(__dirname, 'data.xlsx');
   let excelController;
@@ -66,22 +66,22 @@ ipcMain.handle('read-row', (event, rowNumber) => {
     excelController = new ExcelController(filePath);
   } catch (error) {
     console.error('Error creating ExcelController:', error);
-    return Promise.resolve([]);
+    return;
   }
   
-  return excelController.readRow(parseInt(rowNumber))
+  excelController.readRow(parseInt(rowNumber))
     .then((rowData) => {
       console.log('Read data:', rowData);
-      return rowData;
+      event.sender.send('row-data', rowData); // Send the data to the renderer process
     })
     .catch((error) => {
       console.error('Error reading row:', error);
-      return [];
     })
     .finally(() => {
       excelController.close();
     });
 });
+
 
 ipcMain.handle('append-row', (event, data) => {
   console.log('Appending data to Excel:', data);

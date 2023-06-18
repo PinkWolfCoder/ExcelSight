@@ -3,9 +3,11 @@ const { ipcRenderer } = require('electron');
 document.addEventListener('DOMContentLoaded', () => {
   const loadButton = document.getElementById('loadButton');
   const readButton = document.getElementById('readButton');
-  const appendForm = document.getElementById('appendForm');
   const exitButton = document.getElementById('exitButton');
   const loadTitle = document.getElementById('loadTitle');
+
+  let container = document.getElementById("jsoneditor");
+  let editor = new JSONEditor(container);
 
   ipcRenderer.on('load-result', (event, success) => {
     if (success) {
@@ -16,6 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
       loadTitle.classList.remove('load-success'); // Remove success class
     }
   });
+
+  ipcRenderer.on('row-data', (event, rowData) => {
+    editor.set(rowData); // Set JSON data to editor
+  });
+  
 
   loadButton.addEventListener('click', async () => {
     const filePath = document.getElementById('filePath').value;
@@ -34,16 +41,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  readButton.addEventListener('click', async () => {
+  readButton.addEventListener('click', () => {
     const rowNumber = document.getElementById('readRow').value;
     readButton.disabled = true;  // disable the button
     try {
-      const rowData = await ipcRenderer.invoke('read-row', rowNumber);
-      const readResult = document.getElementById('readResult');
-      const formattedRowData = JSON.stringify(rowData, null, 2);
-      console.log('Formatted row data:', formattedRowData);  // New line
-      readResult.textContent = formattedRowData;
-      console.log('readResult text content:', readResult.textContent);  // New line
+      ipcRenderer.send('read-row', rowNumber);
     } catch (err) {
       console.error(err);
     } finally {
