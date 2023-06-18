@@ -3,21 +3,35 @@ body {
     font-family: Arial, sans-serif;
     font-size: 16px;
     color: #333;
-  }
-  
-  h1, h2, h3 {
+}
+
+h1, h2, h3 {
     color: #666;
-  }
-  
-  h1 {
+}
+
+h1 {
     font-size: 24px;
     font-weight: bold;
-  }
-  
-  .load-success {
+}
+
+.load-success {
     color: green;
-  }
-  
-  .load-failure {
+}
+
+.load-failure {
     color: red;
-  }
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.left-section {
+    grid-column: 1 / 2;
+}
+
+.right-section {
+    grid-column: 2 / 3;
+}
