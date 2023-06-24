@@ -14,8 +14,13 @@ class ExcelReader {
     if (rowNumber < range.s.r || rowNumber > range.e.r) {
       return null;
     }
-    const row = rowNumber + 1;
-    const rowData = xlsx.utils.sheet_to_json(sheet, { range: row });
+    const row = rowNumber;
+    // get the column names from the first row of the sheet
+    const header = xlsx.utils.sheet_to_json(sheet, { range: 0 })[0];
+    // convert the header object to an array of keys
+    const columns = Object.keys(header);
+    // use the columns array as the header option
+    const rowData = xlsx.utils.sheet_to_json(sheet, { range: row, header: columns });
     return rowData.length > 0 ? rowData[0] : null;
   }
 
