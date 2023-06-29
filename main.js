@@ -51,12 +51,28 @@ ipcMain.handle('load-excel', (event, filePath) => {
         reject({ success: false, message: 'File not found' });
       } else {
         console.log(`Excel file loaded successfully: ${fullPath}`);
+        
+        let excelController;
+        try {
+          excelController = new ExcelController(fullPath);
+        } catch (error) {
+          console.error('Error creating ExcelController:', error);
+          reject({ success: false, message: 'Error creating ExcelController' });
+          return;
+        }
+
+        // Call readEmptyRow method
+        const rowData = excelController.readEmptyRow();
+        console.log('Empty row data:', rowData);
+
         event.sender.send('load-result', true); // Inform renderer of success
+        event.sender.send('row-data', rowData);
         resolve({ success: true, message: 'File loaded successfully' });
       }
     });
   });
 });
+
 
 ipcMain.on('read-row', (event, rowNumber) => {
   console.log(`Reading row ${rowNumber} from Excel...`);

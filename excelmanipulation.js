@@ -24,6 +24,18 @@ class ExcelReader {
     return rowData.length > 0 ? rowData[0] : null;
   }
 
+  emptyRowJson() {
+    const sheet = this.workbook.Sheets[this.workbook.SheetNames[0]];
+    // get the column names from the first row of the sheet
+    const header = xlsx.utils.sheet_to_json(sheet, { range: 0 })[0];
+    // create an empty row JSON
+    let emptyRow = {};
+    for (let key in header) {
+      emptyRow[key] = null;
+    }
+    return emptyRow;
+  }
+
   close() {
     // No specific action required to close the Excel reader
   }
@@ -77,6 +89,10 @@ class ExcelController {
   appendRow(data) {
     this.excelWriter.append(data);
     this.excelWriter.save();
+  }
+
+  readEmptyRow() {
+    return this.excelReader.emptyRowJson();
   }
 
   close() {

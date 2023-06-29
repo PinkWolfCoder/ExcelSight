@@ -5,23 +5,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const readButton = document.getElementById('readButton');
   const exitButton = document.getElementById('exitButton');
   const loadTitle = document.getElementById('loadTitle');
+  const clearButton = document.getElementById('clearButton');
 
   let container = document.getElementById("jsoneditor");
   let editor = null;
 
   container.classList.add("hidden");
 
-  ipcRenderer.on('load-result', (event, success) => {
-    if (success) {
-      loadTitle.classList.add('load-success');
-      loadTitle.classList.remove('load-failure');
-    } else {
-      loadTitle.classList.add('load-failure');
-      loadTitle.classList.remove('load-success');
-    }
-  });
-
-  ipcRenderer.on('row-data', (event, rowData) => {
+  function displayRow(rowData) {
     if (editor) {
       editor.destroy();
     }
@@ -29,6 +20,24 @@ document.addEventListener('DOMContentLoaded', () => {
     editor = new JSONEditor(container, {}); // Create a new editor instance
     editor.set(rowData); // Set JSON data to editor
     adjustEditorSize(); // Adjust the size initially
+  }
+
+
+  ipcRenderer.on('load-result', (event, success) => {
+    if (success) {
+      loadTitle.classList.add('load-success');
+      loadTitle.classList.remove('load-failure');
+
+      const rowNumber = 1;
+      container.classList.remove("hidden");
+    } else {
+      loadTitle.classList.add('load-failure');
+      loadTitle.classList.remove('load-success');
+    }
+  });
+
+  ipcRenderer.on('row-data', (event, rowData) => {
+      displayRow(rowData);
   });
 
   function adjustEditorSize() {
@@ -70,6 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
     } finally {
       readButton.disabled = false;
     }
+  });
+
+  clearButton.addEventListener('click', () => {
+     
   });
 
   exitButton.addEventListener('click', () => {
