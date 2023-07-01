@@ -81,8 +81,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  clearButton.addEventListener('click', () => {
-     
+  clearButton.addEventListener('click', async () => {
+    const filePath = document.getElementById('filePath').value;
+    clearButton.disabled = true;
+    try {
+      const response = await ipcRenderer.invoke('on-clear', filePath);
+      if (response.success) {
+        console.log(response.message);
+      } else {
+        console.error(response.message);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      clearButton.disabled = false;
+    }
   });
 
   exitButton.addEventListener('click', () => {

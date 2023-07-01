@@ -26,6 +26,12 @@ function createWindow() {
   });
 }
 
+function sendEmptyRowToRenderer(excelController, sender) {
+  const rowData = excelController.readEmptyRow();
+  console.log('Empty row data:', rowData);
+  sender.send('row-data', rowData);
+}
+
 app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
@@ -60,17 +66,30 @@ ipcMain.handle('load-excel', (event, filePath) => {
           reject({ success: false, message: 'Error creating ExcelController' });
           return;
         }
-
-        // Call readEmptyRow method
-        const rowData = excelController.readEmptyRow();
-        console.log('Empty row data:', rowData);
-
         event.sender.send('load-result', true); // Inform renderer of success
-        event.sender.send('row-data', rowData);
+
+        sendEmptyRowToRenderer(excelController, event.sender);
         resolve({ success: true, message: 'File loaded successfully' });
       }
     });
   });
+});
+
+ipcMain.handle('on-clear', (event, filePath) => {
+  const fullPath = path.resolve(__dirname, filePath);
+  console.log(`Clearing Excel file from path: ${fullPath}`);
+
+  let excelController;
+  try {
+    excelController = new ExcelController(fullPath);
+    sendEmptyRowToRenderer(excelController, event.sender);
+    console.log(`Excel file cleared successfully: ${fullPath}`);
+    return { success: true, message: 'File cleared successfully' };
+  } catch (error) {
+    console.error('Error creating ExcelController:', error);
+    event.sender.send('clear-result', false); // Inform renderer of failure
+    return { success: false, message: 'Error creating ExcelController' };
+  }
 });
 
 
